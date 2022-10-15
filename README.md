@@ -1,2 +1,24 @@
-# Book-club-rails-react
-The book club app helps you search about books get a short description about the book. see what other reader said about it, and leave your comments about it
+# README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...

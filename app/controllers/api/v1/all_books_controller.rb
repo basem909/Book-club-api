@@ -1,20 +1,23 @@
 class Api::V1::AllBooksController < ApplicationController
-  # SEARCH
+ 
+  # DISPLAY SAVED
   def index
-    @searched = []
+    render json: AllBook.find_by(user_id: current_user.id)
   end
 
-  # DISPLAY SAVED
+  # BOOK DETAILS
   def show
-    @saved.each do |book|
-      @searched.push(book.as_json.merge({ image: url_for(book.image) }))
+    render json: AllBook.find(params[:id])
+  end
+
+  # CREATE SEARCH & SAVE
+  def create
+    @searched = fetch api
+    @seached.each do |book|
+      AllBook.create(book)
     end
 
     render json: @searched
-  end
-
-  # CREATE CURRENT READING SELECTION
-  def create
   end
 
   private
@@ -40,9 +43,5 @@ class Api::V1::AllBooksController < ApplicationController
     request_api(
       "https://restcountries-v1.p.rapidapi.com/name/#{URI.encode(name)}"
     )
-  end
-
-  def all_books_params
-    params.permit(:name, :stars, :image, :link, :total_reviews, :best_seller, :current_reading)
   end
 end

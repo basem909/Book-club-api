@@ -6,8 +6,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do 
-      resources :all_books, only: [:index, :show, :create]
-      resources :users, param: :username, only: [:show]
+      resources :users, only: [:show] do
+        resources :all_books, only: [:index, :show, :create]
+      end
     end
   end
 end

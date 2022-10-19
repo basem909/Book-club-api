@@ -25,6 +25,9 @@ class Api::V1::AllBooksController < ApplicationController
   end
 
   def update
+    @book = AllBook.find_by(id: params[:id])
+    @book.update(current_reading: !@book.current_reading)
+    render json: { status: 'updated', data: @book.current_reading}
   end
   private
 

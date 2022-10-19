@@ -1,22 +1,19 @@
 class Api::V1::AllBooksController < ApplicationController
-  # SEARCH
+  # SEARCHED
   def index
-    @search_query = params[:search_query] 
-    @books = find_book(@search_query)
+    @books = AllBook.all
     render json: {status:'sucess', data: @books}
 
   end
 
-  # DISPLAY SAVED
+  # DISPLAY DETAILS
   def show
-    @saved.each do |book|
-      @searched.push(book.as_json.merge({ image: url_for(book.image) }))
-    end
+    @book = AllBook.find_by(id: params[:id])
 
-    render json: @searched
+    render json: {status: 'sucess', data: @book}
   end
 
-  # CREATE CURRENT READING SELECTION
+  # NEW SEARCH QUERY
   def create
     @search_query = params[:search_query] 
     @books = find_book(@search_query.parameterize(separator: '_'))['results']
@@ -27,6 +24,8 @@ class Api::V1::AllBooksController < ApplicationController
     render json: {status:'sucess', data: new_books}
   end
 
+  def update
+  end
   private
 
   # app/controllers/travel_controller.rb

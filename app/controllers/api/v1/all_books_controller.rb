@@ -1,7 +1,10 @@
 class Api::V1::AllBooksController < ApplicationController
   # SEARCH
   def index
-    @searched = []
+    @search_query = params[:search_query] 
+    @books = find_book(@search_query)
+    render json: {status:'sucess', data: @books}
+
   end
 
   # DISPLAY SAVED
@@ -15,6 +18,13 @@ class Api::V1::AllBooksController < ApplicationController
 
   # CREATE CURRENT READING SELECTION
   def create
+    @search_query = params[:search_query] 
+    @books = find_book(@search_query.parameterize(separator: '_'))['results']
+    @books.each do |book|
+      @new_book = AllBook.create(name: book['name'], stars: book['stars'], image: book['image'], link: book['url'], total_reviews: book['total_reviews'], best_seller: book['best_seller'], current_reading: false, user_id: '1')
+    end
+    new_books = AllBook.all
+    render json: {status:'sucess', data: new_books}
   end
 
   private
@@ -26,8 +36,11 @@ class Api::V1::AllBooksController < ApplicationController
     response = Excon.get(
       url,
       headers: {
-        'X-RapidAPI-Host' => URI.parse(url).host,
-        'X-RapidAPI-Key' => ENV.fetch('RAPIDAPI_API_KEY')
+        'X-RapidAPI-Host' => 'amazon-kindle-scraper.p.rapidapi.com',
+        'X-RapidAPI-Key' => 'ab5dd93003msh198ddd4a3b3488ep147992jsn52900d232c05'
+      },
+      query: {
+        'api_key' => 'bc09e263d60d1bbdfc2455c657c5e9bd'
       }
     )
 
@@ -36,13 +49,13 @@ class Api::V1::AllBooksController < ApplicationController
     JSON.parse(response.body)
   end
 
-  def find_country(name)
+  def find_book(search_query)
     request_api(
-      "https://restcountries-v1.p.rapidapi.com/name/#{URI.encode(name)}"
+      "https://amazon-kindle-scraper.p.rapidapi.com/search/#{search_query}"
     )
   end
 
   def all_books_params
-    params.permit(:name, :stars, :image, :link, :total_reviews, :best_seller, :current_reading)
+    params.permit(:name, :stars, :image, :link, :total_reviews, :best_seller, :current_reading, :search_query)
   end
 end
